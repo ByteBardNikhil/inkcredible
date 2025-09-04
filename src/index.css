@@ -5,7 +5,7 @@
   --text-color: black;
   --hover-color: #2563eb;
   --font-family: "Roboto", sans-serif;
-  --font-size-base: 14px;
+  --font-size-base: 11px;
   --font-size-heading: 18px;
 }
 
@@ -52,14 +52,23 @@ body {
   gap: 1.2rem;
 }
 
-.nav-links li {
-  cursor: pointer;
-  transition: color 0.2s;
+.nav-links a {
+  color: var(--text-color);
+  text-decoration: none;
   font-size: var(--font-size-base);
+
+  border-radius: 1rem;
+}
+.nav-links a:hover {
+  color: var(--hover-color);
+}
+.theme {
+  cursor: pointer;
+  transition: transform 1s ease, opacity 1s ease;
 }
 
-.nav-links li:hover {
-  color: var(--hover-color);
+.theme:active {
+  transform: rotate(360deg);
 }
 
 /* Responsive */
