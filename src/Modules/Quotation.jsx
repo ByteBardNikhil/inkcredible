@@ -80,7 +80,7 @@ export default function Quotation() {
         <table
           border="1"
           cellPadding="8"
-          style={{ width: "100%", marginBottom: "10px" }}
+          style={{ width: "100%", marginBottom: "10px", textAlign: "center" }}
         >
           <thead>
             <tr>
