@@ -1,4 +1,4 @@
-import React, { useState, useRef } from "react";
+import React, { useState, useRef, useEffect } from "react";
 
 export default function Quotation() {
   const [customer, setCustomer] = useState("");
@@ -13,6 +13,10 @@ export default function Quotation() {
   const [total, setTotal] = useState(0);
   const [preparedBy, setPreparedBy] = useState("");
   const printRef = useRef();
+
+  useEffect(() => {
+    calculateTotal();
+  }, [items, cgst, sgst]);
 
   const handleChange = (index, field, value) => {
     const newItems = [...items];
@@ -42,26 +46,29 @@ export default function Quotation() {
 
   const handlePrint = () => {
     calculateTotal();
-    const printContent = printRef.current.innerHTML;
+    const printContent = `
+      <html>
+        <head>
+          <title>Quotation</title>
+          <style>
+            table { width: 100%; border-collapse: collapse; text-align: center; }
+            table, th, td { border: 1px solid black; }
+            th, td { padding: 8px; }
+            p { margin: 5px 0; }
+          </style>
+        </head>
+        <body>
+          <h2>Quotation</h2>
+          <p>Customer Name: ${customer}</p>
+          ${printRef.current.innerHTML}
+        </body>
+      </html>
+    `;
     const WinPrint = window.open("", "", "width=900,height=650");
-    WinPrint.document.write(
-      `<html><head><title>Quotation</title></head><body>${printContent}</body></html>`
-    );
+    WinPrint.document.write(printContent);
     WinPrint.document.close();
     WinPrint.focus();
     WinPrint.print();
-  };
-
-  const handleDownload = () => {
-    calculateTotal();
-    const element = document.createElement("a");
-    const content = printRef.current.innerHTML;
-    const file = new Blob([content], { type: "text/html" });
-    element.href = URL.createObjectURL(file);
-    element.download = "quotation.html";
-    document.body.appendChild(element);
-    element.click();
-    document.body.removeChild(element);
   };
 
   return (
@@ -77,11 +84,7 @@ export default function Quotation() {
       </div>
 
       <div ref={printRef}>
-        <table
-          border="1"
-          cellPadding="8"
-          style={{ width: "100%", marginBottom: "10px", textAlign: "center" }}
-        >
+        <table>
           <thead>
             <tr>
               <th>Sr. No.</th>
@@ -141,15 +144,42 @@ export default function Quotation() {
         </table>
 
         <div style={{ marginTop: "20px" }}>
+          <button onClick={addRow} style={{ marginTop: "10px" }}>
+            Add Row
+          </button>
+
           <p>Sub Total: ₹{subTotal.toFixed(2)}</p>
           <p>
             GST {cgst}% + SGST {sgst}%: ₹
             {((subTotal * (cgst + sgst)) / 100).toFixed(2)}
           </p>
           <p>Total: ₹{total.toFixed(2)}</p>
-          <button onClick={calculateTotal} style={{ marginLeft: "10px" }}>
-            Add
-          </button>
+
+          <div style={{ marginTop: "20px" }}>
+            <div style={{ marginBottom: "10px" }}>
+              <label>Ink Type: </label>
+              <input type="text" placeholder="e.g. Offset / Flexo" />
+            </div>
+            <div style={{ marginBottom: "10px" }}>
+              <label>Ink Subtype: </label>
+              <input
+                type="text"
+                placeholder="e.g. Solvent-based / Water-based"
+              />
+            </div>
+            <div style={{ marginBottom: "10px" }}>
+              <label>Color: </label>
+              <input type="text" placeholder="e.g. Cyan, Magenta" />
+            </div>
+            <div style={{ marginBottom: "10px" }}>
+              <label>Packaging: </label>
+              <select>
+                <option value="Tin">Tin</option>
+                <option value="Bottle">Bottle</option>
+                <option value="Drum">Drum</option>
+              </select>
+            </div>
+          </div>
         </div>
 
         <p style={{ marginTop: "20px" }}>
@@ -163,13 +193,7 @@ export default function Quotation() {
       </div>
 
       <div style={{ marginTop: "20px" }}>
-        <button onClick={addRow}>Add Row</button>
-        <button onClick={handleDownload} style={{ marginLeft: "10px" }}>
-          Download
-        </button>
-        <button onClick={handlePrint} style={{ marginLeft: "10px" }}>
-          Print
-        </button>
+        <button onClick={handlePrint}>Print</button>
       </div>
     </div>
   );
