@@ -6,20 +6,10 @@ import Orders from "./Modules/Order";
 import Production from "./Modules/Production";
 import Inventory from "./Modules/Inventory";
 import Quality from "./Modules/Quality";
-
-function Dispatch() {
-  return <h2>Dispatch & Delivery Page</h2>;
-}
-function Finance() {
-  return <h2>Finance Page</h2>;
-}
-function Analytics() {
-  return <h2>Analytics Dashboard</h2>;
-}
-function HR() {
-  return <h2>HR Dashboard</h2>;
-}
-
+import Dispatch from "./Modules/Dispatch";
+import Finance from "./Modules/Finance";
+import Analytics from "./Modules/Analytics";
+import HR from "./Modules/HR";
 export default function App() {
   return (
     <Router>
