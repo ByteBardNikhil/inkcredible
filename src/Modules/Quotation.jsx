@@ -2,14 +2,26 @@ import React, { useState } from "react";
 
 export default function Quotation() {
   const [inkType, setInkType] = useState("");
+  const [inkSubType, setInkSubType] = useState("");
   const [color, setColor] = useState("");
   const [packaging, setPackaging] = useState("Tin");
-  const [qty, setQty] = useState(0);
-  const [rate, setRate] = useState(0);
+  const [qty, setQty] = useState(""); // string
+  const [rate, setRate] = useState(""); // string
+  const [cgst, setCgst] = useState("9"); // string
+  const [sgst, setSgst] = useState("9"); // string
   const [total, setTotal] = useState(0);
+  const [finalAmount, setFinalAmount] = useState(0);
 
   const calculate = () => {
-    setTotal(qty * rate);
+    const q = Number(qty) || 0;
+    const r = Number(rate) || 0;
+    const c = Number(cgst) || 0;
+    const s = Number(sgst) || 0;
+
+    const subTotal = q * r;
+    const tax = subTotal * ((c + s) / 100);
+    setTotal(subTotal);
+    setFinalAmount(subTotal + tax);
   };
 
   return (
@@ -23,6 +35,16 @@ export default function Quotation() {
           value={inkType}
           placeholder="e.g. Offset / Flexo"
           onChange={(e) => setInkType(e.target.value)}
+        />
+      </div>
+
+      <div style={{ marginBottom: "10px" }}>
+        <label>Ink Subtype: </label>
+        <input
+          type="text"
+          value={inkSubType}
+          placeholder="e.g. Solvent-based / Water-based"
+          onChange={(e) => setInkSubType(e.target.value)}
         />
       </div>
 
@@ -53,7 +75,7 @@ export default function Quotation() {
         <input
           type="number"
           value={qty}
-          onChange={(e) => setQty(Number(e.target.value))}
+          onChange={(e) => setQty(e.target.value)}
         />
       </div>
 
@@ -62,18 +84,34 @@ export default function Quotation() {
         <input
           type="number"
           value={rate}
-          onChange={(e) => setRate(Number(e.target.value))}
+          onChange={(e) => setRate(e.target.value)}
+        />
+      </div>
+
+      <div style={{ marginBottom: "10px" }}>
+        <label>CGST %: </label>
+        <input
+          type="number"
+          value={cgst}
+          onChange={(e) => setCgst(e.target.value)}
+        />{" "}
+        <label>SGST %: </label>
+        <input
+          type="number"
+          value={sgst}
+          onChange={(e) => setSgst(e.target.value)}
         />
       </div>
 
       <button onClick={calculate}>Calculate</button>
 
       <h3 style={{ marginTop: "15px" }}>
-        Total: ₹{total} ({qty} × {rate})
+        Subtotal: ₹{total} ({qty || 0} × {rate || 0})
       </h3>
+      <h3>Total with GST: ₹{finalAmount.toFixed(2)}</h3>
 
       <p style={{ marginTop: "10px", fontStyle: "italic", color: "gray" }}>
-        {inkType} Ink ({color}), Packaging: {packaging}
+        {inkType} ({inkSubType}) Ink — Color: {color}, Packaging: {packaging}
       </p>
     </div>
   );
