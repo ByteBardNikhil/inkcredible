@@ -5,18 +5,18 @@ export default function Quotation() {
   const [inkSubType, setInkSubType] = useState("");
   const [color, setColor] = useState("");
   const [packaging, setPackaging] = useState("Tin");
-  const [qty, setQty] = useState(""); // string
-  const [rate, setRate] = useState(""); // string
-  const [cgst, setCgst] = useState("9"); // string
-  const [sgst, setSgst] = useState("9"); // string
+  const [qty, setQty] = useState("");
+  const [rate, setRate] = useState("");
+  const [cgst, setCgst] = useState("9");
+  const [sgst, setSgst] = useState("9");
   const [total, setTotal] = useState(0);
   const [finalAmount, setFinalAmount] = useState(0);
 
   const calculate = () => {
-    const q = Number(qty) || 0;
-    const r = Number(rate) || 0;
-    const c = Number(cgst) || 0;
-    const s = Number(sgst) || 0;
+    const q = parseFloat(qty) || 0;
+    const r = parseFloat(rate) || 0;
+    const c = parseFloat(cgst) || 0;
+    const s = parseFloat(sgst) || 0;
 
     const subTotal = q * r;
     const tax = subTotal * ((c + s) / 100);
@@ -25,7 +25,7 @@ export default function Quotation() {
   };
 
   return (
-    <div style={{ padding: "20px" }}>
+    <div style={{ padding: "20px", maxWidth: "500px" }}>
       <h2>Quotation & Estimation (Ink)</h2>
 
       <div style={{ marginBottom: "10px" }}>
@@ -33,8 +33,8 @@ export default function Quotation() {
         <input
           type="text"
           value={inkType}
-          placeholder="e.g. Offset / Flexo"
           onChange={(e) => setInkType(e.target.value)}
+          placeholder="e.g. Offset / Flexo"
         />
       </div>
 
@@ -43,8 +43,8 @@ export default function Quotation() {
         <input
           type="text"
           value={inkSubType}
-          placeholder="e.g. Solvent-based / Water-based"
           onChange={(e) => setInkSubType(e.target.value)}
+          placeholder="e.g. Solvent / Water"
         />
       </div>
 
@@ -53,8 +53,8 @@ export default function Quotation() {
         <input
           type="text"
           value={color}
-          placeholder="e.g. Cyan, Magenta"
           onChange={(e) => setColor(e.target.value)}
+          placeholder="e.g. Cyan"
         />
       </div>
 
@@ -71,7 +71,7 @@ export default function Quotation() {
       </div>
 
       <div style={{ marginBottom: "10px" }}>
-        <label>Quantity (Kg/Ltr): </label>
+        <label>Quantity: </label>
         <input
           type="number"
           value={qty}
@@ -94,8 +94,8 @@ export default function Quotation() {
           type="number"
           value={cgst}
           onChange={(e) => setCgst(e.target.value)}
-        />{" "}
-        <label>SGST %: </label>
+        />
+        <label> SGST %: </label>
         <input
           type="number"
           value={sgst}
@@ -105,9 +105,7 @@ export default function Quotation() {
 
       <button onClick={calculate}>Calculate</button>
 
-      <h3 style={{ marginTop: "15px" }}>
-        Subtotal: ₹{total} ({qty || 0} × {rate || 0})
-      </h3>
+      <h3 style={{ marginTop: "15px" }}>Subtotal: ₹{total.toFixed(2)}</h3>
       <h3>Total with GST: ₹{finalAmount.toFixed(2)}</h3>
 
       <p style={{ marginTop: "10px", fontStyle: "italic", color: "gray" }}>

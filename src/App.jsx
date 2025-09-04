@@ -10,6 +10,7 @@ import Dispatch from "./Modules/Dispatch";
 import Finance from "./Modules/Finance";
 import Analytics from "./Modules/Analytics";
 import HR from "./Modules/HR";
+
 export default function App() {
   return (
     <Router>
@@ -17,15 +18,16 @@ export default function App() {
       <div style={{ padding: 20 }}>
         <Routes>
           <Route path="/" element={<Quotation />} />
-          <Route path="/quotation" element={<Quotation />} />
-          <Route path="/orders" element={<Orders />} />
-          <Route path="/production" element={<Production />} />
-          <Route path="/inventory" element={<Inventory />} />
-          <Route path="/quality" element={<Quality />} />
-          <Route path="/dispatch" element={<Dispatch />} />
-          <Route path="/finance" element={<Finance />} />
-          <Route path="/analytics" element={<Analytics />} />
-          <Route path="/HR" element={<HR />} />
+          <Route path="/inkcredible" element={<Quotation />} />
+          <Route path="/inkcredible/quotation" element={<Quotation />} />
+          <Route path="/inkcredible/orders" element={<Orders />} />
+          <Route path="/inkcredible/production" element={<Production />} />
+          <Route path="/inkcredible/inventory" element={<Inventory />} />
+          <Route path="/inkcredible/quality" element={<Quality />} />
+          <Route path="/inkcredible/dispatch" element={<Dispatch />} />
+          <Route path="/inkcredible/finance" element={<Finance />} />
+          <Route path="/inkcredible/analytics" element={<Analytics />} />
+          <Route path="/inkcredible/hr" element={<HR />} />
         </Routes>
       </div>
     </Router>
