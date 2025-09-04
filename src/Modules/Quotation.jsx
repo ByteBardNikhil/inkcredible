@@ -3,9 +3,9 @@ import React, { useState, useRef, useEffect } from "react";
 export default function Quotation() {
   const [customer, setCustomer] = useState("");
   const [items, setItems] = useState([
-    { name: "", qty: "", rate: "", amount: 0 },
-    { name: "", qty: "", rate: "", amount: 0 },
-    { name: "", qty: "", rate: "", amount: 0 },
+    { name: "", color: "", qty: "", rate: "", amount: 0 },
+    { name: "", color: "", qty: "", rate: "", amount: 0 },
+    { name: "", color: "", qty: "", rate: "", amount: 0 },
   ]);
   const [cgst, setCgst] = useState(9);
   const [sgst, setSgst] = useState(9);
@@ -21,16 +21,14 @@ export default function Quotation() {
   const handleChange = (index, field, value) => {
     const newItems = [...items];
     newItems[index][field] = value;
-    if (field === "qty" || field === "rate") {
-      const q = parseFloat(newItems[index].qty) || 0;
-      const r = parseFloat(newItems[index].rate) || 0;
-      newItems[index].amount = q * r;
-    }
+    const q = parseFloat(newItems[index].qty) || 0;
+    const r = parseFloat(newItems[index].rate) || 0;
+    newItems[index].amount = q * r;
     setItems(newItems);
   };
 
   const addRow = () =>
-    setItems([...items, { name: "", qty: "", rate: "", amount: 0 }]);
+    setItems([...items, { name: "", color: "", qty: "", rate: "", amount: 0 }]);
 
   const removeRow = (index) => {
     const newItems = items.filter((_, i) => i !== index);
@@ -47,28 +45,87 @@ export default function Quotation() {
   const handlePrint = () => {
     calculateTotal();
     const printContent = `
-      <html>
-        <head>
-          <title>Quotation</title>
-          <style>
-            table { width: 100%; border-collapse: collapse; text-align: center; }
-            table, th, td { border: 1px solid black; }
-            th, td { padding: 8px; }
-            p { margin: 5px 0; }
-          </style>
-        </head>
-        <body>
-          <h2>Quotation</h2>
-          <p>Customer Name: ${customer}</p>
-          ${printRef.current.innerHTML}
-        </body>
-      </html>
-    `;
-    const WinPrint = window.open("", "", "width=900,height=650");
+    <html>
+      <head>
+        <title>Quotation</title>
+        <style>
+          body { font-family: Arial, sans-serif; margin: 20px; }
+          h2, h3 { text-align: center; margin: 5px 0; }
+          table { width: 100%; border-collapse: collapse; margin-top: 10px; }
+          table, th, td { border: 1px solid black; }
+          th, td { padding: 8px; text-align: center; }
+          p { margin: 4px 0; }
+          hr { border: 1px solid #000; margin: 10px 0; }
+        </style>
+      </head>
+      <body>
+        <h2>QUOTATION</h2>
+        <p>Company Name: [Your Ink Company Name]</p>
+        <p>Address: [Full Address]</p>
+        <p>Contact: [Phone / Email]</p>
+        <p>GST No.: [Your GST No.]</p>
+        <p>Quotation No.: [XXXX]</p>
+        <p>Date: [DD/MM/YYYY]</p>
+        <p>Valid Till: [DD/MM/YYYY]</p>
+        <hr />
+        <p>To,</p>
+        <p>${customer || "[Customer Name / Company]"}</p>
+        <p>[Address]</p>
+        <hr />
+        <h3>Product Details</h3>
+        <table>
+          <thead>
+            <tr>
+              <th>Sr. No.</th>
+              <th>Product Description</th>
+              <th>Color / Grade</th>
+              <th>Qty. (Kg/Ltr)</th>
+              <th>Rate (₹/Kg)</th>
+              <th>Amount (₹)</th>
+            </tr>
+          </thead>
+          <tbody>
+            ${items
+              .map(
+                (item, i) => `
+              <tr>
+                <td>${i + 1}</td>
+                <td>${item.name || "Printing Ink"}</td>
+                <td>${item.color || "NTNK"}</td>
+                <td>${parseFloat(item.qty || 0)}</td>
+                <td>${parseFloat(item.rate || 0).toFixed(2)}</td>
+                <td>${parseFloat(item.amount || 0).toFixed(2)}</td>
+              </tr>`
+              )
+              .join("")}
+          </tbody>
+        </table>
+        <p>Subtotal: ₹${subTotal.toFixed(2)}</p>
+        <p>GST @ ${(cgst + sgst).toFixed(0)}%: ₹${(
+      (subTotal * (cgst + sgst)) /
+      100
+    ).toFixed(2)}</p>
+        <p>Total Payable: ₹${total.toFixed(2)}</p>
+        <hr />
+        <h3>Terms & Conditions</h3>
+        <p>1. Prices are ex-factory / ex-warehouse.</p>
+        <p>2. Freight, insurance, and handling charges extra (if applicable).</p>
+        <p>3. Delivery: [XX days] from the date of order confirmation.</p>
+        <p>4. Payment Terms: [Advance / Credit Days].</p>
+        <p>5. Quotation valid till [DD/MM/YYYY].</p>
+        <hr />
+        <p>Authorized Signatory</p>
+        <p>${preparedBy || "[Name & Designation]"}</p>
+        <p>[Ink Company Name & Seal]</p>
+      </body>
+    </html>
+  `;
+    const WinPrint = window.open("", "_blank");
     WinPrint.document.write(printContent);
     WinPrint.document.close();
     WinPrint.focus();
     WinPrint.print();
+    WinPrint.close();
   };
 
   return (
@@ -89,6 +146,7 @@ export default function Quotation() {
             <tr>
               <th>Sr. No.</th>
               <th>Item Name</th>
+              <th>Color / Grade</th>
               <th>Qty</th>
               <th>Rate</th>
               <th>Amount</th>
@@ -109,6 +167,14 @@ export default function Quotation() {
                 </td>
                 <td>
                   <input
+                    value={item.color}
+                    onChange={(e) =>
+                      handleChange(index, "color", e.target.value)
+                    }
+                  />
+                </td>
+                <td>
+                  <input
                     type="number"
                     value={item.qty}
                     onChange={(e) => handleChange(index, "qty", e.target.value)}
@@ -123,20 +189,9 @@ export default function Quotation() {
                     }
                   />
                 </td>
-                <td>{item.amount.toFixed(2)}</td>
+                <td>{parseFloat(item.amount || 0).toFixed(2)}</td>
                 <td>
-                  <button
-                    onClick={() => removeRow(index)}
-                    style={{
-                      background: "red",
-                      color: "#fff",
-                      border: "none",
-                      padding: "4px 8px",
-                      borderRadius: "4px",
-                    }}
-                  >
-                    Remove
-                  </button>
+                  <button onClick={() => removeRow(index)}>Remove</button>
                 </td>
               </tr>
             ))}
@@ -144,45 +199,16 @@ export default function Quotation() {
         </table>
 
         <div style={{ marginTop: "20px" }}>
-          <button onClick={addRow} style={{ marginTop: "10px" }}>
-            Add Row
-          </button>
-
+          <button onClick={addRow}>Add Row</button>
           <p>Sub Total: ₹{subTotal.toFixed(2)}</p>
           <p>
             GST {cgst}% + SGST {sgst}%: ₹
             {((subTotal * (cgst + sgst)) / 100).toFixed(2)}
           </p>
           <p>Total: ₹{total.toFixed(2)}</p>
-
-          <div style={{ marginTop: "20px" }}>
-            <div style={{ marginBottom: "10px" }}>
-              <label>Ink Type: </label>
-              <input type="text" placeholder="e.g. Offset / Flexo" />
-            </div>
-            <div style={{ marginBottom: "10px" }}>
-              <label>Ink Subtype: </label>
-              <input
-                type="text"
-                placeholder="e.g. Solvent-based / Water-based"
-              />
-            </div>
-            <div style={{ marginBottom: "10px" }}>
-              <label>Color: </label>
-              <input type="text" placeholder="e.g. Cyan, Magenta" />
-            </div>
-            <div style={{ marginBottom: "10px" }}>
-              <label>Packaging: </label>
-              <select>
-                <option value="Tin">Tin</option>
-                <option value="Bottle">Bottle</option>
-                <option value="Drum">Drum</option>
-              </select>
-            </div>
-          </div>
         </div>
 
-        <p style={{ marginTop: "20px" }}>
+        <p>
           Prepared by:{" "}
           <input
             type="text"
