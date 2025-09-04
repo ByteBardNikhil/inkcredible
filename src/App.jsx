@@ -1,22 +1,12 @@
 import React from "react";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import Navbar from "./layouts/Navbar";
+import Quotation from "./Modules/Quotation";
+import Orders from "./Modules/Order";
+import Production from "./Modules/Production";
+import Inventory from "./Modules/Inventory";
+import Quality from "./Modules/Quality";
 
-function Quotation() {
-  return <h2>Quotation & Estimation Page</h2>;
-}
-function Orders() {
-  return <h2>Order Management Page</h2>;
-}
-function Production() {
-  return <h2>Production Planning Page</h2>;
-}
-function Inventory() {
-  return <h2>Inventory Management Page</h2>;
-}
-function Quality() {
-  return <h2>Quality Control Page</h2>;
-}
 function Dispatch() {
   return <h2>Dispatch & Delivery Page</h2>;
 }
@@ -25,6 +15,9 @@ function Finance() {
 }
 function Analytics() {
   return <h2>Analytics Dashboard</h2>;
+}
+function HR() {
+  return <h2>HR Dashboard</h2>;
 }
 
 export default function App() {
@@ -42,6 +35,7 @@ export default function App() {
           <Route path="/dispatch" element={<Dispatch />} />
           <Route path="/finance" element={<Finance />} />
           <Route path="/analytics" element={<Analytics />} />
+          <Route path="/HR" element={<HR />} />
         </Routes>
       </div>
     </Router>

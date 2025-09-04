@@ -62,6 +62,11 @@ export default function Navbar() {
             Analytics
           </Link>
         </li>
+        <li>
+          <Link to="/HR" onClick={() => setMenuOpen(false)}>
+            HR
+          </Link>
+        </li>
         <li
           onClick={() => {
             const current = theme;
